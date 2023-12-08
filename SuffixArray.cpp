@@ -27,7 +27,7 @@ bool SuffixArray::addString(std::string inputString)
 
 bool SuffixArray::addStringFromFile(std::string fileName)
 {
-	std::ifstream fin(fileName, std::ios::binary);
+	/*std::ifstream fin(fileName, std::ios::binary);
 	if (!fin)
 	{
 		std::cerr << "Could not read file from: " << fileName << std::endl;
@@ -53,9 +53,48 @@ bool SuffixArray::addStringFromFile(std::string fileName)
 		string->push_back(reinterpret_cast<unsigned char&>(*temp));
 		i++;
 	}
-	delete temp;
+	delete temp;*/
 
-    numStrings += 1;
+	//MODIFIED BELOW to read from FASTA file
+	std::ifstream infile(fileName, std::ios::binary);
+	if (!infile)
+        {
+                std::cerr << "Could not read file from: " << fileName << std::endl;
+                return false;
+        }
+
+	if (!infile.is_open()) {
+        	std::cerr << "Error opening file: " << fileName << std::endl;
+        	return false;
+	}
+
+	std::string line;
+    	std::string header;
+    	std::string sequence;
+
+	while (std::getline(infile, line)) {
+        	if (line.empty()) {
+            		continue; // Skip empty lines
+        	}
+
+        	if (line[0] == '>') {
+            		//sequence.clear();
+			continue;
+        	} else {
+            		// This is a sequence line, append it to the current sequence
+            		for(int i = 0; i < line.length(); i++){
+				if(line[i] != 'N' && !isspace(line[i])){
+					string->push_back(reinterpret_cast<unsigned char&>(line[i]));
+					sequence += line[i];
+				}
+			}
+        	}
+    	}
+	std::cout << "string length is: " << string->size() << std::endl;
+	std::cout << "string is: " << sequence.substr(0,100) << std::endl;
+    	infile.close();
+	string->push_back(reinterpret_cast<unsigned char&>(sequence));
+	numStrings += 1;
 	return true;
 }
 
@@ -241,6 +280,14 @@ void SuffixArray::printVector(std::vector<T> v)
 	{
 		std::cout << *i << ' ';
 	}
+
+	std::cout << std::endl;
+
+	/*for (auto i = v.begin(); i != v.end(); i++)
+        {
+                std::cout << string[*i] << ' ';
+        }*/
+
 	std::cout << std::endl;
 }
 
@@ -266,4 +313,5 @@ void SuffixArray::printSuffixArray()
 {
 	std::cout << "Suffix Array : ";
 	printVector(*suffixArray);
+	std::cout << "Suffix Array size is: " << suffixArray->size() << std::endl;
 }

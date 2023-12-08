@@ -2,9 +2,10 @@
 #include "SAIS.h"
 #include "Naive.h"
 
-int main()
+int main(int argc, char* argv[])
 {
-    std::string testString1("cabbage");
+    //OLD
+    /*std::string testString1("cabbage");
     std::string testString2("baggage");
     std::cout << "Test String: " << testString1 << std::endl;
 
@@ -36,5 +37,21 @@ int main()
     testLCS.addString(testString2);
     testLCS.makeSuffixArray();
     testLCS.printSuffixArray();
-    testLCS.findLongestCommonStrand(2);
+    testLCS.findLongestCommonStrand(2);*/
+
+	//TEST SKEW (KS)
+	std::cout << argv[1] << std::endl;
+	Skew s;
+	std::cout << typeid(s).name() << std::endl;
+	s.addStringFromFile(argv[1]);
+	s.makeSuffixArray();
+	s.printSuffixArray();
+    	std::cout << std::endl;
+
+	SAIS s2;
+	std::cout << typeid(s2).name() << std::endl;
+        s2.addStringFromFile(argv[1]);
+        s2.makeSuffixArray();
+        s2.printSuffixArray();
+        std::cout << std::endl;
 }
